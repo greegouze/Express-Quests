@@ -3,6 +3,8 @@ const express = require("express");
 
 const app = express();
 
+app.use(express.json())
+
 const port = process.env.APP_PORT ?? 3000;
 
 const welcome = (req, res) => {
@@ -19,6 +21,10 @@ app.get("/api/movies/:id", movieHandlers.getMovieById);
 //route user
 app.get("/api/users", movieHandlers.getUser);
 app.get("/api/users/:id", movieHandlers.getUserId);
+
+//route POST
+app.post("/api/movies", movieHandlers.postMovie);
+app.post("/api/users", movieHandlers.postUsers)
 
 app.listen(port, (err) => {
   if (err) {
