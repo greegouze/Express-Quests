@@ -23,12 +23,23 @@ app.get("/api/users", movieHandlers.getUser);
 app.get("/api/users/:id", movieHandlers.getUserId);
 
 //route POST
-app.post("/api/movies", movieHandlers.postMovie);
-app.post("/api/users", movieHandlers.postUsers)
+// app.post("/api/movies", movieHandlers.postMovie);
+/* app.post("/api/users", movieHandlers.postUsers) */
 
 //route UPDATE
-app.put("/api/movies/:id", movieHandlers.updateMovie);
-app.put("/api/users/:id", movieHandlers.updateUser);
+/* app.put("/api/movies/:id", movieHandlers.updateMovie);
+app.put("/api/users/:id", movieHandlers.updateUser); */
+
+//Validation
+const {validateMovie, validateUser} = require("./validators")
+
+app.post("/api/movies", validateMovie, movieHandlers.postMovie)
+app.put("/api/movies/:id", validateMovie, movieHandlers.updateMovie);
+
+app.post("/api/users", validateUser, movieHandlers.postUsers) 
+app.put("/api/users/:id", validateUser, movieHandlers.updateUser);
+
+
 
 app.listen(port, (err) => {
   if (err) {
