@@ -30,6 +30,10 @@ app.get("/api/users/:id", movieHandlers.getUserId);
 /* app.put("/api/movies/:id", movieHandlers.updateMovie);
 app.put("/api/users/:id", movieHandlers.updateUser); */
 
+//route DELETE
+app.delete("/api/movies/:id", movieHandlers.deleteMovie)
+app.delete("/api/users/:id", movieHandlers.deleteUser)
+
 //Validation
 const {validateMovie, validateUser} = require("./validators")
 

@@ -1,5 +1,7 @@
 const database = require("./database");
 
+
+//Methode GET
 const getMovies = (req, res) => {
   database
     .query("select * from movies")
@@ -59,6 +61,7 @@ const getUserId = (req, res) => {
     });
 };
 
+//Méthode POST
 const postMovie = (req, res) => {
   const { title, director, year, color, duration } = req.body;
 
@@ -94,6 +97,7 @@ const postUsers = (req, res) => {
     });
 };
 
+//Méthode UPDATE
 const updateMovie = (req, res) => {
   const id = parseInt(req.params.id);
   const { title, director, year, color, duration } = req.body;
@@ -138,6 +142,45 @@ const updateUser = (req, res) => {
   });
 }
 
+//Méthode DELETE
+const deleteMovie = (req, res) => {
+  const id = parseInt(req.params.id);
+
+  database
+  .query("delete from movies where id = ?", [id])
+  .then(([result]) => {
+    if(result.affectedRows === 0){
+      res.status(404).send('Non toujours pas !')
+    } else {
+      res.status(200).send('Pas de soucis je te fais ça !')
+    }
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send("Error deleted movie");
+
+  })
+}
+
+const deleteUser = (req, res) => {
+  const id = parseInt(req.params.id);
+
+  database
+  .query("delete from users where id = ?", [id])
+  .then(([result]) => {
+    if(result.affectedRows === 0){
+      res.status(404).send('ça va bien mon reuf ? *-*')
+    } else {
+      res.status(200).send("Emballé c'est pesé !")
+    }
+  })
+  .catch((err) => {
+    console.error(err);
+    res.status(500).send("Error deleted movie");
+
+  })
+}
+
 module.exports = {
   getMovies,
   getMovieById,
@@ -146,5 +189,7 @@ module.exports = {
   postMovie,
   postUsers,
   updateMovie,
-  updateUser
+  updateUser,
+  deleteMovie,
+  deleteUser
 };
