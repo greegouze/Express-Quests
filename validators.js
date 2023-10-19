@@ -4,9 +4,9 @@ const Joi = require("joi");
 const movieShema = Joi.object({
   title: Joi.string().max(255).required(),
   director: Joi.string().max(255).required(),
-  year: Joi.string().max(255).required(),
+  year: Joi.string().max(255).pattern(/^\d+$/).required(),
   color: Joi.string().max(255).required(),
-  duration: Joi.number().integer().min(1).required,
+  duration: Joi.number().integer().min(1).required(),
 });
 
 const validateMovie = (req, res, next) => {
