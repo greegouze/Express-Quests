@@ -1,22 +1,22 @@
 const database = require("./database");
 
 const getUser = (req, res) => {
-  const initialSql = "select * from users"
-  const where = []
+  const initialSql = "select firstname, lastname, email, city, language from users";
+  const where = [];
 
-  if(req.query.language != null){
+  if (req.query.language != null) {
     where.push({
-      column:"language",
+      column: "language",
       value: req.query.language,
       operator: "=",
-    })
-  } 
+    });
+  }
 
-  if(req.query.city != null){
+  if (req.query.city != null) {
     where.push({
       column: "city",
       value: req.query.city,
-      operator:'='
+      operator: "=",
     });
   }
 
@@ -41,7 +41,7 @@ const getUser = (req, res) => {
 const getUserId = (req, res) => {
   const userId = parseInt(req.params.id);
   database
-    .query("select * from users where id = ?", [userId])
+    .query("select firstname, lastname, email, city, language from users where id = ?", [userId])
     .then(([users]) => {
       if (users[0] != null) {
         res.status(200).json(users[0]);
@@ -57,12 +57,13 @@ const getUserId = (req, res) => {
 
 const postUsers = (req, res) => {
   //firstname, lastname, email, city, language
-  const { firstname, lastname, email, city, language } = req.body;
+  const { firstname, lastname, email, city, language, hashedPassword } =
+    req.body;
 
   database
     .query(
-      "INSERT INTO users(firstname, lastname, email, city, language) VALUES (?, ?, ?, ?, ?)",
-      [firstname, lastname, email, city, language]
+      "INSERT INTO users(firstname, lastname, email, city, language, hashedPassword) VALUES (?, ?, ?, ?, ?, ?)",
+      [firstname, lastname, email, city, language, hashedPassword]
     )
     .then(([result]) => {
       res.location(`/api/users/${result.insertId}`).sendStatus(201);
