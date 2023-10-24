@@ -1,5 +1,5 @@
 require("dotenv").config();
-const { hashPassword, verifyPassword, verifyToken } = require("./auth");
+
 const express = require("express");
 
 const app = express();
@@ -8,12 +8,14 @@ app.use(express.json());
 
 const port = process.env.APP_PORT ?? 3000;
 
-const welcome = (req, res) => {
-  res.send("Welcome to my favourite movie list");
-};
+const { hashPassword, verifyPassword, verifyToken } = require("./auth");
 
 const movieHandlers = require("./movieHandlers");
 const userHandlers = require("./userHandlers");
+
+const welcome = (req, res) => {
+  res.send("Welcome to my favourite movie list");
+};
 
 // public routes
 app.get("/", welcome);
@@ -29,12 +31,7 @@ app.get("/api/users/:id", userHandlers.getUserId);
 //Validation
 const { validateMovie, validateUser } = require("./validators");
 
-//route DELETE
-app.delete("/api/movies/:id", movieHandlers.deleteMovie);
-app.delete("/api/users/:id", userHandlers.deleteUser);
-
 //login
-
 app.post(
   "/api/login",
   userHandlers.getUserByEmailWithPasswordAndPassToNext,
@@ -45,10 +42,11 @@ app.use(verifyToken)
 
 app.post("/api/movies", movieHandlers.postMovie);
 app.put("/api/movies/:id", validateMovie, movieHandlers.updateMovie);
+app.delete("/api/movies/:id", movieHandlers.deleteMovie);
 
 app.post("/api/users", hashPassword, validateUser, userHandlers.postUsers);
 app.put("/api/users/:id", hashPassword, validateUser, userHandlers.updateUser);
-
+app.delete("/api/users/:id", userHandlers.deleteUser);
 
 app.listen(port, (err) => {
   if (err) {
