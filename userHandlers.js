@@ -1,7 +1,8 @@
 const database = require("./database");
 
 const getUser = (req, res) => {
-  const initialSql = "select firstname, lastname, email, city, language from users";
+  const initialSql =
+    "select firstname, lastname, email, city, language from users";
   const where = [];
 
   if (req.query.language != null) {
@@ -41,7 +42,10 @@ const getUser = (req, res) => {
 const getUserId = (req, res) => {
   const userId = parseInt(req.params.id);
   database
-    .query("select firstname, lastname, email, city, language from users where id = ?", [userId])
+    .query(
+      "select firstname, lastname, email, city, language from users where id = ?",
+      [userId]
+    )
     .then(([users]) => {
       if (users[0] != null) {
         res.status(200).json(users[0]);
@@ -114,10 +118,31 @@ const deleteUser = (req, res) => {
     });
 };
 
+//handler login
+const getUserByEmailWithPasswordAndPassToNext = (req, res, next) => {
+  const { email } = req.body;
+
+  database
+    .query("select * from users where email = ?", [email])
+    .then(([users]) => {
+      if (users[0] != null) {
+        req.user = users[0];
+
+        next();
+      } else {
+        res.sendStatus(401);
+      }
+    })
+    .catch((err) => {
+      console.error(err);
+      res.status(500).send("et non mon vieux !");
+    });
+};
 module.exports = {
   getUser,
   getUserId,
   postUsers,
   updateUser,
   deleteUser,
+  getUserByEmailWithPasswordAndPassToNext,
 };
